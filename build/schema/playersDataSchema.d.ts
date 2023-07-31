@@ -1,0 +1,2 @@
+declare const playersTypeDefs = "\n  type Player {\n    id: Int\n    name: String\n    fullName: String\n    nickName: String\n    captain: Boolean\n    role: String\n    keeper: Boolean\n    substitute: Boolean\n    teamId: Int\n    battingStyle: String\n    bowlingStyle: String\n    teamName: String\n    faceImageId: Int\n  }\n\n  type Mutation {\n    storePlayersData: [Player!]!\n  }\n";
+export default playersTypeDefs;
