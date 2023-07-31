@@ -138,9 +138,10 @@ const resolvers = {
               (match: {
                 team1: { teamId: number };
                 team2: { teamId: number };
+                matchId: number; // Assuming there is a matchId property in the match object
               }) => [
-                { teamId: match.team1.teamId },
-                { teamId: match.team2.teamId },
+                { teamId: match.team1.teamId, matchId: match.matchId },
+                { teamId: match.team2.teamId, matchId: match.matchId },
               ]
             )
           )
@@ -149,12 +150,15 @@ const resolvers = {
         // Store the unique teams in the "teams" table
         for (const team of uniqueTeams) {
           const query = `
-            INSERT INTO teams (team_id)
-            VALUES ($1)
-            ON CONFLICT (team_id) DO NOTHING;
-          `;
+        INSERT INTO teams (team_id, match_id)
+        VALUES ($1, $2)
+        ON CONFLICT (team_id) DO NOTHING;
+      `;
 
-          const values = [(team as { teamId: number }).teamId];
+          const values = [
+            (team as { teamId: number }).teamId,
+            (team as { matchId: number }).matchId,
+          ];
           // Execute the query using the pool
           await pool.query(query, values);
         }

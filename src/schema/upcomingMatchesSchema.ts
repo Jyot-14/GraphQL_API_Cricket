@@ -4,6 +4,7 @@ type Team {
   teamName: String!
   teamSName: String!
   imageId: Int!
+  matchId: Int! 
 }
 
 type VenueInfo {

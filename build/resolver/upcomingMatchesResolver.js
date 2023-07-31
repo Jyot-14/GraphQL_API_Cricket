@@ -106,17 +106,20 @@ const resolvers = {
                 const updatedData = await fetchUpcomingMatchesData();
                 // Extract unique teams from the fetched data
                 const uniqueTeams = Array.from(new Set(updatedData.flatMap((match) => [
-                    { teamId: match.team1.teamId },
-                    { teamId: match.team2.teamId },
+                    { teamId: match.team1.teamId, matchId: match.matchId },
+                    { teamId: match.team2.teamId, matchId: match.matchId },
                 ])));
                 // Store the unique teams in the "teams" table
                 for (const team of uniqueTeams) {
                     const query = `
-            INSERT INTO teams (team_id)
-            VALUES ($1)
-            ON CONFLICT (team_id) DO NOTHING;
-          `;
-                    const values = [team.teamId];
+        INSERT INTO teams (team_id, match_id)
+        VALUES ($1, $2)
+        ON CONFLICT (team_id) DO NOTHING;
+      `;
+                    const values = [
+                        team.teamId,
+                        team.matchId,
+                    ];
                     // Execute the query using the pool
                     await db_1.default.query(query, values);
                 }
