@@ -9,7 +9,7 @@ async function fetchPlayersData(matchId, teamId) {
     try {
         const response = await axios_1.default.get(`https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/${matchId}/team/${teamId}`, {
             headers: {
-                'X-RapidAPI-Key': '8473fcbf65msh03bee8b7f821ccep10a25ejsn7b7df21a4058',
+                'X-RapidAPI-Key': 'eda7dcfeb4mshd896c7edbdad4fdp13e213jsn1127558118a2',
                 'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com',
             },
         });
@@ -73,6 +73,7 @@ const playersResolvers = {
     Mutation: {
         storePlayersData: async () => {
             try {
+                const successMessages = [];
                 // Fetch match data from the database and get the first 10 matches sorted by startDate ASC.
                 const query = `
           SELECT match_id, team1_id, team2_id FROM upcoming_matches
@@ -89,8 +90,9 @@ const playersResolvers = {
                     // Fetch and store players' data for team2
                     const playersDataTeam2 = await fetchPlayersData(match_id, team2_id);
                     await storePlayersDataInDB(playersDataTeam2);
+                    successMessages.push(`Players data stored successfully for Match ID: ${match_id}`);
                 }
-                return 'Players data stored successfully!';
+                return successMessages;
             }
             catch (error) {
                 console.error('Error storing players data:', error);

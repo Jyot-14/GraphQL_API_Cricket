@@ -1,6 +1,6 @@
 declare const playersResolvers: {
     Mutation: {
-        storePlayersData: () => Promise<string>;
+        storePlayersData: () => Promise<string[]>;
     };
 };
 export default playersResolvers;
