@@ -22,12 +22,21 @@ async function fetchUpcomingMatchesData() {
         )
             .map((match) => {
             const { matchInfo } = match;
+            const { team1, team2 } = matchInfo; // Extract team1 and team2 from matchInfo
+            // Fetch the team1_image_id and team2_image_id from the teams object
+            const team1_image_id = team1 && team1.imageId;
+            const team2_image_id = team2 && team2.imageId;
+            // Generate the image URLs
+            const team1ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team1_image_id}.jpg?alt=media`;
+            const team2ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team2_image_id}.jpg?alt=media`;
             return {
                 ...matchInfo,
                 startDate: parseInt(matchInfo.startDate),
                 endDate: parseInt(matchInfo.endDate),
                 seriesStartDt: parseInt(matchInfo.seriesStartDt),
                 seriesEndDt: parseInt(matchInfo.seriesEndDt),
+                team1ImageURL,
+                team2ImageURL,
             };
         }));
         return updatedData;
@@ -59,15 +68,16 @@ const resolvers = {
                 const updatedData = await fetchUpcomingMatchesData();
                 // Store the updated data to the PostgreSQL database
                 for (const match of updatedData) {
-                    const { matchId, seriesId, matchDesc, matchFormat, team1, team2, startDate, endDate, seriesStartDt, seriesEndDt, venueInfo, } = match;
+                    const { matchId, seriesId, matchDesc, matchFormat, team1, team2, startDate, endDate, seriesStartDt, seriesEndDt, venueInfo, team1_image_id, team2_image_id, } = match;
+                    // Generate the image URLs
+                    const team1ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team1_image_id}.jpg?alt=media`;
+                    const team2ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team2_image_id}.jpg?alt=media`;
                     const query = `
               INSERT INTO upcoming_matches
               (match_id, series_id, match_desc, match_format, team1_id, team1_name, team1_sname, team1_image_id,
                 team2_id, team2_name, team2_sname, team2_image_id, start_date, end_date, series_start_dt, series_end_dt,
-                ground, city, country, timezone)
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
-              ON CONFLICT (match_id) DO NOTHING;
-            `;
+                ground, city, country, timezone, image_url) -- Include imageURL in the column list
+              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`;
                     const values = [
                         matchId,
                         seriesId,
@@ -89,6 +99,8 @@ const resolvers = {
                         venueInfo.city,
                         venueInfo.country,
                         venueInfo.timezone,
+                        team1ImageURL,
+                        team2ImageURL, // Add imageURL to the values array
                     ];
                     // Execute the query using the pool
                     await db_1.default.query(query, values);

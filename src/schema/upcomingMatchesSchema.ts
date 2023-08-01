@@ -26,6 +26,8 @@ type Match {
   seriesStartDt: String!
   seriesEndDt: String!
   venueInfo: VenueInfo!
+  team1ImageURL: String!  
+  team2ImageURL: String! 
 }
 
 type Query {
