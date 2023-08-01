@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express4_1 = require("@apollo/server/express4");
 const server_1 = require("@apollo/server");
+const cors_1 = __importDefault(require("cors"));
 const upcomingMatchesSchema_1 = __importDefault(require("./schema/upcomingMatchesSchema"));
 const upcomingMatchesResolver_1 = __importDefault(require("./resolver/upcomingMatchesResolver"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -16,6 +17,8 @@ async function init() {
     const app = (0, express_1.default)();
     const PORT = Number(process.env.PORT);
     app.use(express_1.default.json());
+    // Enable CORS middleware
+    app.use((0, cors_1.default)());
     // Create GraphQL Server
     const server = new server_1.ApolloServer({
         typeDefs: [upcomingMatchesSchema_1.default, playersDataSchema_1.default],
