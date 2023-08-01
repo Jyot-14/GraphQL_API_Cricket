@@ -73,11 +73,35 @@ const resolvers = {
                     const team1ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team1_image_id}.jpg?alt=media`;
                     const team2ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team2_image_id}.jpg?alt=media`;
                     const query = `
-              INSERT INTO upcoming_matches
-              (match_id, series_id, match_desc, match_format, team1_id, team1_name, team1_sname, team1_image_id,
-                team2_id, team2_name, team2_sname, team2_image_id, start_date, end_date, series_start_dt, series_end_dt,
-                ground, city, country, timezone, image_url) -- Include imageURL in the column list
-              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`;
+         INSERT INTO upcoming_matches
+  (match_id, series_id, match_desc, match_format, team1_id, team1_name, team1_sname, team1_image_id,
+    team2_id, team2_name, team2_sname, team2_image_id, start_date, end_date, series_start_dt, series_end_dt,
+    ground, city, country, timezone, team1_imageURL, team2_imageURL) 
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+  ON CONFLICT (match_id) DO UPDATE
+  SET
+    series_id = EXCLUDED.series_id,
+    match_desc = EXCLUDED.match_desc,
+    match_format = EXCLUDED.match_format,
+    team1_id = EXCLUDED.team1_id,
+    team1_name = EXCLUDED.team1_name,
+    team1_sname = EXCLUDED.team1_sname,
+    team1_image_id = EXCLUDED.team1_image_id,
+    team2_id = EXCLUDED.team2_id,
+    team2_name = EXCLUDED.team2_name,
+    team2_sname = EXCLUDED.team2_sname,
+    team2_image_id = EXCLUDED.team2_image_id,
+    start_date = EXCLUDED.start_date,
+    end_date = EXCLUDED.end_date,
+    series_start_dt = EXCLUDED.series_start_dt,
+    series_end_dt = EXCLUDED.series_end_dt,
+    ground = EXCLUDED.ground,
+    city = EXCLUDED.city,
+    country = EXCLUDED.country,
+    timezone = EXCLUDED.timezone,
+    team1_imageURL = EXCLUDED.team1_imageURL,
+    team2_imageURL = EXCLUDED.team2_imageURL;
+`;
                     const values = [
                         matchId,
                         seriesId,
@@ -100,7 +124,7 @@ const resolvers = {
                         venueInfo.country,
                         venueInfo.timezone,
                         team1ImageURL,
-                        team2ImageURL, // Add imageURL to the values array
+                        team2ImageURL,
                     ];
                     // Execute the query using the pool
                     await db_1.default.query(query, values);
