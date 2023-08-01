@@ -73,10 +73,10 @@ const resolvers = {
                     const team1ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team1_image_id}.jpg?alt=media`;
                     const team2ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team2_image_id}.jpg?alt=media`;
                     const query = `
-         INSERT INTO upcoming_matches
+  INSERT INTO upcoming_matches
   (match_id, series_id, match_desc, match_format, team1_id, team1_name, team1_sname, team1_image_id,
     team2_id, team2_name, team2_sname, team2_image_id, start_date, end_date, series_start_dt, series_end_dt,
-    ground, city, country, timezone, team1_imageURL, team2_imageURL) 
+    ground, city, country, timezone, team1_imageurl, team2_imageurl) 
   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
   ON CONFLICT (match_id) DO UPDATE
   SET
@@ -99,8 +99,8 @@ const resolvers = {
     city = EXCLUDED.city,
     country = EXCLUDED.country,
     timezone = EXCLUDED.timezone,
-    team1_imageURL = EXCLUDED.team1_imageURL,
-    team2_imageURL = EXCLUDED.team2_imageURL;
+    team1_imageurl = EXCLUDED.team1_imageurl,
+    team2_imageurl = EXCLUDED.team2_imageurl;
 `;
                     const values = [
                         matchId,
