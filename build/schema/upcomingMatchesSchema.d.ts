@@ -1,2 +1,2 @@
-declare const typeDefs = "\ntype Team {\n  teamId: Int!\n  teamName: String!\n  teamSName: String!\n  imageId: Int!\n  matchId: Int! \n}\n\ntype VenueInfo {\n  ground: String!\n  city: String!\n  country: String\n  timezone: String!\n}\n\ntype Match {\n  matchId: Int! \n  seriesId: Int!\n  matchDesc: String!\n  matchFormat: String!\n  team1: Team!\n  team2: Team!\n  startDate: String!\n  endDate: String!\n  seriesStartDt: String!\n  seriesEndDt: String!\n  venueInfo: VenueInfo!\n  team1ImageURL: String!  \n  team2ImageURL: String! \n}\n\ntype Query {\n  upcomingMatches: [Match!]!\n}\n\ntype Mutation {\n  updateTeams: [Team!]!\n  updateUpcomingMatches: [Match!]!\n}\n";
+declare const typeDefs: import("graphql").DocumentNode;
 export default typeDefs;

@@ -26,15 +26,20 @@ async function fetchUpcomingMatchesData() {
             // Fetch the team1_image_id and team2_image_id from the teams object
             const team1_image_id = team1 && team1.imageId;
             const team2_image_id = team2 && team2.imageId;
-            // Generate the image URLs
             const team1ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team1_image_id}.jpg?alt=media`;
             const team2ImageURL = `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FTeams-Images%2F${team2_image_id}.jpg?alt=media`;
+            // Convert date strings to numbers (timestamps are in milliseconds)
+            const convertToDateNumber = (dateStr) => dateStr ? parseInt(dateStr, 10) : null;
+            const startDate = convertToDateNumber(matchInfo.startDate);
+            const endDate = convertToDateNumber(matchInfo.endDate);
+            const seriesStartDt = convertToDateNumber(matchInfo.seriesStartDt);
+            const seriesEndDt = convertToDateNumber(matchInfo.seriesEndDt);
             return {
                 ...matchInfo,
-                startDate: parseInt(matchInfo.startDate),
-                endDate: parseInt(matchInfo.endDate),
-                seriesStartDt: parseInt(matchInfo.seriesStartDt),
-                seriesEndDt: parseInt(matchInfo.seriesEndDt),
+                startDate,
+                endDate,
+                seriesStartDt,
+                seriesEndDt,
                 team1ImageURL,
                 team2ImageURL,
             };
