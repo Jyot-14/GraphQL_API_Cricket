@@ -9,7 +9,7 @@ async function fetchPlayersData(matchId, teamId) {
     try {
         const response = await axios_1.default.get(`https://cricbuzz-cricket.p.rapidapi.com/mcenter/v1/${matchId}/team/${teamId}`, {
             headers: {
-                'X-RapidAPI-Key': 'd65111930dmshb4f3b731af3cc2ap184e04jsn006d2eae17a9',
+                'X-RapidAPI-Key': 'eda7dcfeb4mshd896c7edbdad4fdp13e213jsn1127558118a2',
                 'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com',
             },
         });
