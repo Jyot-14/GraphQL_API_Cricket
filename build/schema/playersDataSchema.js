@@ -15,6 +15,7 @@ const playersTypeDefs = `
     bowlingStyle: String
     teamName: String
     faceImageId: Int
+    imageURL: String 
   }
 
   type Mutation {

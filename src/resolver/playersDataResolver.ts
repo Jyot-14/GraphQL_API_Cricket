@@ -8,7 +8,7 @@ async function fetchPlayersData(matchId: string, teamId: number) {
       {
         headers: {
           'X-RapidAPI-Key':
-            'eda7dcfeb4mshd896c7edbdad4fdp13e213jsn1127558118a2',
+            'd65111930dmshb4f3b731af3cc2ap184e04jsn006d2eae17a9',
           'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com',
         },
       }
@@ -73,6 +73,17 @@ async function fetchPlayersData(matchId: string, teamId: number) {
   }
 }
 
+function addImageURLToPlayers(
+  players: { faceImageId: number }[],
+  teamImageId: number
+) {
+  // Assuming 'players' is an array of player objects
+  return players.map((player: { faceImageId: number }) => ({
+    ...player,
+    imageURL: `https://firebasestorage.googleapis.com/v0/b/my11-6b9a0.appspot.com/o/Jyot_Players_images%2FPlayers-Images%2F${player.faceImageId}.jpg?alt=media`,
+  }));
+}
+
 const playersResolvers = {
   Mutation: {
     storePlayersData: async () => {
@@ -94,11 +105,19 @@ const playersResolvers = {
 
           // Fetch and store players' data for team1
           const playersDataTeam1 = await fetchPlayersData(match_id, team1_id);
-          await storePlayersDataInDB(playersDataTeam1);
+          const playersDataTeam1WithImageURL = addImageURLToPlayers(
+            playersDataTeam1,
+            team1_id
+          );
+          await storePlayersDataInDB(playersDataTeam1WithImageURL);
 
           // Fetch and store players' data for team2
           const playersDataTeam2 = await fetchPlayersData(match_id, team2_id);
-          await storePlayersDataInDB(playersDataTeam2);
+          const playersDataTeam2WithImageURL = addImageURLToPlayers(
+            playersDataTeam2,
+            team2_id
+          );
+          await storePlayersDataInDB(playersDataTeam2WithImageURL);
 
           successMessages.push(
             `Players data stored successfully for Match ID: ${match_id}`
@@ -117,8 +136,8 @@ const playersResolvers = {
 async function storePlayersDataInDB(playersData: any[]) {
   try {
     const insertQuery = `
-      INSERT INTO players (id, name, fullName, nickName, captain, role, keeper, substitute, teamId, battingStyle, bowlingStyle, teamName, faceImageId)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      INSERT INTO players (id, name, fullName, nickName, captain, role, keeper, substitute, teamId, battingStyle, bowlingStyle, teamName, faceImageId, imageURL)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       ON CONFLICT DO NOTHING;
     `;
 
@@ -137,6 +156,7 @@ async function storePlayersDataInDB(playersData: any[]) {
         bowlingStyle,
         teamName,
         faceImageId,
+        imageURL,
       } = player;
 
       await pool.query(insertQuery, [
@@ -153,6 +173,7 @@ async function storePlayersDataInDB(playersData: any[]) {
         bowlingStyle,
         teamName,
         faceImageId,
+        imageURL,
       ]);
     }
   } catch (error) {
