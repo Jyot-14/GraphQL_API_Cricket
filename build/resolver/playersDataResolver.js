@@ -77,6 +77,23 @@ function addImageURLToPlayers(players, teamImageId) {
     }));
 }
 const playersResolvers = {
+    Query: {
+        getPlayersDataByTeamId: async (parent, args) => {
+            try {
+                const query = `
+          SELECT * FROM players
+          WHERE teamId = $1;
+        `;
+                const { teamId } = args;
+                const { rows } = await db_1.default.query(query, [teamId]);
+                return rows;
+            }
+            catch (error) {
+                console.error('Error fetching players data from DB:', error);
+                throw new Error('Failed to fetch players data from DB.');
+            }
+        },
+    },
     Mutation: {
         storePlayersData: async () => {
             try {

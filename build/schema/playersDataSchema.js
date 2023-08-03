@@ -18,6 +18,10 @@ const playersTypeDefs = `
     imageURL: String 
   }
 
+  type Query {
+    getPlayersDataByTeamId(teamId: Int!): [Player!]!
+  }
+
   type Mutation {
     storePlayersData: [Player!]!
   }
